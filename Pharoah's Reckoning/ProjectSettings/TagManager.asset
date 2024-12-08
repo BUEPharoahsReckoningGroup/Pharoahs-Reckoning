@@ -15,7 +15,7 @@ TagManager:
   - Player
   - Background
   - trap
-  - 
+  - object
   - 
   - 
   - 
@@ -47,11 +47,11 @@ TagManager:
   - name: Ground
     uniqueID: 2842476949
     locked: 0
-  - name: Boss
-    uniqueID: 1811416767
-    locked: 0
   - name: Object
     uniqueID: 151096987
+    locked: 0
+  - name: Boss
+    uniqueID: 1811416767
     locked: 0
   - name: Collectable
     uniqueID: 2025128463
