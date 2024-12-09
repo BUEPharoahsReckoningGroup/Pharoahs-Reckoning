@@ -84,4 +84,21 @@ public class PlayerController : MonoBehaviour
     {
         Instantiate(bullet,FirePoint.position,FirePoint.rotation);
     }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.CompareTag("Slider"))
+        {
+            anim.SetTrigger("Slide");
+        }
+    }
+     void OnTriggerExit2D(Collider2D other)
+    {
+        // Stop the slide animation when leaving the slider object
+        if (other.CompareTag("Slider"))
+        {
+            anim.ResetTrigger("Slide");
+        }
+    }
+
 }
