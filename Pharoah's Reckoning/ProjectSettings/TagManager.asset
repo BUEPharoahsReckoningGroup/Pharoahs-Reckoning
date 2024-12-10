@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Slider
+  - Wall
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -47,6 +49,9 @@ TagManager:
     locked: 0
   - name: Player
     uniqueID: 1899859661
+    locked: 0
+  - name: Enemy
+    uniqueID: 24827775
     locked: 0
   - name: trap
     uniqueID: 1648323113
