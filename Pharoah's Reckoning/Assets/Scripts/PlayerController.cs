@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviour
             if(GetComponent<SpriteRenderer>()!=null)
             {
                 GetComponent<SpriteRenderer>().flipX = true;
+               
             }
 
             
@@ -57,6 +58,7 @@ public class PlayerController : MonoBehaviour
             if(GetComponent<SpriteRenderer>()!=null)
             {
                 GetComponent<SpriteRenderer>().flipX = false;
+            
             }
 
             

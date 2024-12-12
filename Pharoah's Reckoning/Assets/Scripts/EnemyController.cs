@@ -7,6 +7,8 @@ public class EnemyController : MonoBehaviour
     public bool isFacingRight=false;
     public float maxSpeed;
     public int damage;
+    public int health=2;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -29,5 +31,19 @@ public class EnemyController : MonoBehaviour
         {
             FindObjectOfType<PlayerStats>().TakeDamage(damage);
         }
+        if(other.CompareTag("Bullet"))
+        {
+            health--;
+            //Destroy(other.gameObject);
+
+            if (health <= 0)
+            {
+                Destroy(this.gameObject);
+            }
+        }
     }
+    //public void TakeDamage(int damage)
+   // {
+//
+    //}
 }

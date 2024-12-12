@@ -8,28 +8,45 @@ public class BulletController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        PlayerController player;
-        player=FindObjectOfType<PlayerController>();
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
 
-        if(player.transform.localScale.x<0)
+        // Get the direction the player is facing
+        PlayerController player = FindObjectOfType<PlayerController>();
+
+        if (player.GetComponent<SpriteRenderer>().flipX) // Player is facing left
         {
-            speed=-speed;
-            transform.localScale=new Vector3(-(transform.localScale.x),transform.localScale.y,transform.localScale.z);
+            speed = -Mathf.Abs(speed); // Bullet moves to the left
         }
+        else // Player is facing right
+        {
+            speed = Mathf.Abs(speed); // Bullet moves to the right
+        }
+
+        // Set the bullet's velocity
+        rb.velocity = new Vector2(speed, 0);
     }
 
     // Update is called once per frame
     void Update()
     {
-        GetComponent<Rigidbody2D>().velocity=new Vector2(speed,GetComponent<Rigidbody2D>().velocity.y);
-
+       
+       Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        rb.velocity = new Vector2(speed, rb.velocity.y);
     }
-    void OnTriggerEnter2D(Collider2D other)
+   void OnTriggerEnter2D(Collider2D other)
+{
+    // Destroy the bullet when it hits a wall
+    if (other.CompareTag("Wall"))
     {
-        if(other.tag=="Enemy")
-        {
-            Destroy(other.gameObject);
-                Destroy(this.gameObject);
-        }
+        Destroy(this.gameObject); // Destroy this specific bullet
     }
+
+    // Destroy both the bullet and the enemy when they collide
+    if (other.CompareTag("Enemy"))
+    {
+        Destroy(this.gameObject); // Destroy this specific bullet
+        Destroy(other.gameObject); // Destroy the enemy
+    }
+}
+
 }
