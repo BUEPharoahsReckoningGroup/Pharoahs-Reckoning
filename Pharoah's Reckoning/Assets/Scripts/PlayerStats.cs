@@ -4,74 +4,110 @@ using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
 {
+    public int health = 100;
+    public int lives = 3;
 
-    public int health=100;
-    public int lives=3;
-private float flickerTime=0f;
-private float flickerDuration=0.1f;
-private SpriteRenderer spriteRenderer;
-public bool isImmune=false;
-public float immunityTime=0f;
-public float immunityDuration=1.5f;
-    // Start is called before the first frame update
+    public int totalArtifacts = 0;
+
+    private float flickerTime = 0f;
+    private float flickerDuration = 0.1f;
+    private SpriteRenderer spriteRenderer;
+    public bool isImmune = false;
+    public float immunityTime = 0f;
+    public float immunityDuration = 1.5f;
+
+    private Animator animator;
+    private bool isDead = false;
+
     void Start()
     {
-        spriteRenderer=this.gameObject.GetComponent<SpriteRenderer>();
+        spriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
+        animator = this.gameObject.GetComponent<Animator>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if(this.isImmune==true)
+        if (isImmune)
         {
             SpriteFlicker();
-            immunityTime=immunityTime+Time.deltaTime;
-            if(immunityTime>=immunityDuration)
+            immunityTime += Time.deltaTime;
+            if (immunityTime >= immunityDuration)
             {
-                this.isImmune=false;
-                this.spriteRenderer.enabled=true;
-                //Debug.Log("Immunity has ended")
+                isImmune = false;
+                spriteRenderer.enabled = true;
             }
         }
     }
+
     void SpriteFlicker()
     {
-        if(this.flickerTime<this.flickerDuration)
+        if (flickerTime < flickerDuration)
         {
-            this.flickerTime=this.flickerTime+Time.deltaTime;
+            flickerTime += Time.deltaTime;
         }
-        else if(this.flickerTime>=this.flickerDuration)
+        else if (flickerTime >= flickerDuration)
         {
-            spriteRenderer.enabled=!(spriteRenderer.enabled);
-            this.flickerTime=0;
+            spriteRenderer.enabled = !spriteRenderer.enabled;
+            flickerTime = 0;
         }
     }
+
     public void TakeDamage(int damage)
     {
-        if(this.isImmune==false)
+        if (isImmune || isDead) return;
+
+        health -= damage;
+        if (health < 0) health = 0;
+
+        if (health == 0)
         {
-            this.health=this.health-damage;
-            if(this.health<0)
-            {this.health=0;}
-            if(this.lives>0 && this.health==0)
+            if (lives > 0)
             {
-                FindObjectOfType<LevelManager>().RespawnPlayer();
-                this.health=100;
-                this.lives--;
+                StartCoroutine(HandleRespawn());
             }
-            else if (this.lives==0 && this.health==0)
+            else
             {
-                Debug.Log("Gameover");
-                Destroy(this.gameObject);
+                StartCoroutine(HandleGameOver());
             }
-            Debug.Log("Player Health:"+this.health.ToString());
-             Debug.Log("Player Lives:"+this.lives.ToString());
         }
+
+        Debug.Log("Player Health: " + health);
+        Debug.Log("Player Lives: " + lives);
+
         PlayHitReaction();
     }
+
     void PlayHitReaction()
     {
-        this.isImmune=true;
-        this.immunityTime=0f;
+        isImmune = true;
+        immunityTime = 0f;
+    }
+
+    IEnumerator HandleRespawn()
+    {
+        isDead = true; // Prevent further actions
+        animator.SetTrigger("Death"); // Trigger the death animation
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length); // Wait for the animation to finish
+
+        FindObjectOfType<LevelManager>().RespawnPlayer(); // Call the respawn method
+        health = 100; // Reset health
+        lives--; // Deduct a life
+        isDead = false; // Allow actions again
+    }
+
+    IEnumerator HandleGameOver()
+    {
+        isDead = true; // Prevent further actions
+        animator.SetTrigger("Death"); // Trigger the death animation
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length); // Wait for the animation to finish
+
+        Debug.Log("Game Over"); // Log the game over state
+        Destroy(gameObject); // Destroy the player
+    }
+
+   public void CollectedArtifact(int artifactValue)
+    {
+        this.totalArtifacts += artifactValue;
+        Debug.Log("Total Artifacts Collected: " + this.totalArtifacts);
     }
 }

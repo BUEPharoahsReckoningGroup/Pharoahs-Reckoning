@@ -7,6 +7,10 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed;
     public float jumpHeight;
 
+    public AudioClip jump1;
+    public AudioClip jump2;
+    public AudioClip gunshotSound;
+
     public KeyCode Spacebar;
     public KeyCode L;
     public KeyCode R;
@@ -31,6 +35,8 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Death")) { return;} // Ignore inputs during death
+
          transform.position = new Vector3(transform.position.x, transform.position.y, 0);
         if(Input.GetKeyDown(Spacebar) && grounded)
         {
@@ -76,7 +82,7 @@ public class PlayerController : MonoBehaviour
     void Jump()
     {
         GetComponent<Rigidbody2D>().velocity = new Vector2(GetComponent<Rigidbody2D>().velocity.x, jumpHeight);
-        
+        AudioManager.instance.RandomizeSfx(jump1,jump2);
     }
 
      void FixedUpdate()
@@ -86,6 +92,7 @@ public class PlayerController : MonoBehaviour
     public void Shoot()
     {
         Instantiate(bullet,FirePoint.position,FirePoint.rotation);
+        AudioManager.instance.PlaySingle(gunshotSound); // Play the gunshot sound every time the player shoots
     }
 
     void OnTriggerEnter2D(Collider2D other)
