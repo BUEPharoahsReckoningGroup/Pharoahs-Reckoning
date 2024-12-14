@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro; // Import this namespace for TextMesh Pro UI
+
 
 public class PlayerStats : MonoBehaviour
 {
@@ -8,7 +11,7 @@ public class PlayerStats : MonoBehaviour
     public int lives = 3;
 
     public int totalArtifacts = 0;
-
+    public TextMeshProUGUI ArtifactsUI;
     private float flickerTime = 0f;
     private float flickerDuration = 0.1f;
     private SpriteRenderer spriteRenderer;
@@ -37,6 +40,7 @@ public class PlayerStats : MonoBehaviour
                 spriteRenderer.enabled = true;
             }
         }
+        ArtifactsUI.text= "Artifacts: " + totalArtifacts;
     }
 
     void SpriteFlicker()
